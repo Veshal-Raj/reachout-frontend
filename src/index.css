@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+/* ChatGPT Color Theme */
+:root {
+    --chatgpt-primary: #00d56a; /* ChatGPT Green */
+    --chatgpt-dark: #343434; /* Dark Gray */
+    --chatgpt-light: #f4f4f4; /* Light Gray */
+    --chatgpt-accent: #50b87e; /* Accent Green */
+    --chatgpt-background: #1d1f20; /* Dark Background */
+    --chatgpt-text: #d9d9d9; /* Text color (light gray) */
+    --chatgpt-hover: #00b256; /* Hover effect color */
+  }
+  
+  /* Custom Button Styling */
+  .btn-primary {
+    background-color: var(--chatgpt-primary);
+    border-color: var(--chatgpt-primary);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--chatgpt-hover);
+    border-color: var(--chatgpt-hover);
+  }
+  
+  .btn-secondary {
+    background-color: var(--chatgpt-accent);
+    border-color: var(--chatgpt-accent);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--chatgpt-hover);
+    border-color: var(--chatgpt-hover);
+  }
+
