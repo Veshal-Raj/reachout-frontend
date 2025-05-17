@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer } from "../../utils/folder/framer-motion";
-import { testimonials } from "../../utils/folder/general";
+import { jobSeekerTestimonials } from "../../utils/folder/general"
 import { Star } from "lucide-react";
 
 const Testimonials = () => {
+    // Updated testimonials for job seekers
     return (
         <section className="relative container mx-auto px-6 py-24 z-10">
         <motion.div 
@@ -13,10 +14,10 @@ const Testimonials = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-sm font-medium text-blue-400 mb-2 block">TESTIMONIALS</span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Loved by recruiters everywhere</h2>
+          <span className="text-sm font-medium text-blue-400 mb-2 block">SUCCESS STORIES</span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">From job seekers like you</h2>
           <p className="text-xl text-white/60 max-w-3xl mx-auto">
-            See what our customers have to say about how ReachOut has transformed their outreach efforts.
+            Real people who used our platform to create effective outreach campaigns and land their dream jobs.
           </p>
         </motion.div>
 
@@ -27,7 +28,7 @@ const Testimonials = () => {
           whileInView="show"
           viewport={{ once: true }}
         >
-          {testimonials.map((testimonial, idx) => (
+          {jobSeekerTestimonials.map((testimonial, idx) => (
             <motion.div
               key={idx}
               variants={fadeInUp}

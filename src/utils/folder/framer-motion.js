@@ -21,6 +21,22 @@ export const itemVariants = {
     }
   };
 
+  export const scheduleItemVariants = {
+    hidden: { 
+      y: 20, 
+      opacity: 0 
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
   // Landing Page Animation variants
  export const staggerContainer = {
     hidden: { opacity: 0 },

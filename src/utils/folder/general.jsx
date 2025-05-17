@@ -33,22 +33,37 @@ export const UPLOAD_PRESET="reachout.cloudinary"
 
 export const CLOUD_NAME="dmlsgfbwu"
 
-export const testimonials = [
-  {
-    avatar: "A",
-    name: "Sarah Johnson",
-    role: "Technical Recruiter",
-    company: "HireFast",
-    content: "The Excel integration saved us hundreds of hours. Now we can take a candidate list and launch a personalized campaign in minutes."
-  },
-  {
-    avatar: "J",
-    name: "Michael Chen",
-    role: "Talent Acquisition Lead",
-    company: "StartupGrid",
-    content: "Being able to attach PDFs to templates and schedule follow-ups automatically has doubled our response rates."
-  }
-];
+export const jobSeekerTestimonials = [
+        {
+            avatar: "M",
+            name: "Michael Chen",
+            role: "Software Engineer",
+            company: "Hired at TechCorp",
+            content: "I was struggling to get responses from recruiters until I used this platform. The ability to import my recruiter list from LinkedIn and send personalized emails on a schedule helped me land 3 interviews in my first week!"
+        },
+        {
+            avatar: "J",
+            name: "Jessica Miller",
+            role: "Marketing Specialist",
+            company: "Hired at BrandSync",
+            content: "The email templates were a game-changer for my job search. I customized them for different roles and companies, and my response rate skyrocketed. I got my dream job after just 2 weeks of using this platform."
+        },
+        {
+            avatar: "R",
+            name: "Robert Johnson",
+            role: "Data Analyst",
+            company: "Hired at DataViz",
+            content: "As someone who hates cold emailing, this platform made the process painless. I uploaded my Excel list of target companies, created a template, and scheduled the campaign. The analytics helped me refine my approach until I got results."
+        },
+        {
+            avatar: "S",
+            name: "Sarah Patel",
+            role: "UX Designer",
+            company: "Hired at CreativeHub",
+            content: "Being able to track which recruiters opened my emails and when they did so helped me time my follow-ups perfectly. I went from zero responses to multiple interviews in just days. Worth every penny!"
+        }
+    ];
+
 
 // LandingPage Features with enhanced descriptions
  export const features = [

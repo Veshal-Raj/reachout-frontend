@@ -17,9 +17,9 @@ const CTAsection = () => {
           <div className="absolute inset-0 backdrop-blur-sm bg-black/20"></div>
           
           <div className="relative px-8 py-16 md:py-20 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Turn Spreadsheets Into Conversations</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Turn Contact Lists Into Job Interviews</h2>
             <p className="text-xl text-white/80 max-w-2xl mx-auto mb-10">
-              Start converting your recruiter lists into meaningful outreach with our free plan
+              Start creating personalized recruiter outreach campaigns today with our free plan
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -28,7 +28,7 @@ const CTAsection = () => {
                 className="relative overflow-hidden group bg-white text-slate-900 font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-white/25 transition-all duration-300"
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  Get Started Now
+                  Begin Your Job Search
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-white via-blue-100 to-white translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
@@ -37,14 +37,14 @@ const CTAsection = () => {
               <span className="text-white/80">or</span>
               
               <a className="flex items-center gap-2 text-white hover:text-white/80 underline">
-                Schedule a Demo
+                View Sample Campaigns
               </a>
             </div>
             
             <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-6 text-sm text-white/70">
               <div className="flex items-center gap-2">
                 <Check className="h-5 w-5 text-green-400" />
-                <span>14-day free trial</span>
+                <span>1000 free emails monthly</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="h-5 w-5 text-green-400" />
@@ -52,7 +52,7 @@ const CTAsection = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Check className="h-5 w-5 text-green-400" />
-                <span>Cancel anytime</span>
+                <span>Excel and CSV import</span>
               </div>
             </div>
           </div>

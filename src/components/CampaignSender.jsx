@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Send, Mail, Users, CheckCircle, AlertCircle } from "lucide-react";
+import { Send, Mail, Users, CheckCircle, AlertCircle, Clock, Calendar } from "lucide-react";
 import { getEmailTemplates, getLists, sendCampaign } from "../api";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { containerVariants, itemVariants } from "../utils/folder/framer-motion";
+import moment from "moment";
 
 const CampaignSender = () => {
   const [selectedList, setSelectedList] = useState("");
@@ -12,6 +13,9 @@ const CampaignSender = () => {
   const [availableTemplates, setAvailableTemplates] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [scheduleType, setScheduleType] = useState("now"); // 'now' or 'future'
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [scheduledTime, setScheduledTime] = useState("");
 
   useEffect(() => {
     fetchList();
@@ -55,9 +59,16 @@ const CampaignSender = () => {
   const handleSendCampaign = async () => {
     if (selectedList && selectedTemplate) {
       setIsSending(true);
+
+      let scheduledAt = null;
+      if (scheduleType === "future" && scheduledDate && scheduledTime) {
+        scheduledAt = moment(`${scheduledDate} ${scheduledTime}`, "YYYY-MM-DD HH:mm").toISOString();
+      }
+
       const payload = {
         listId: selectedList,
         templateId: selectedTemplate,
+        scheduledAt
       };
 
       const campaignPromise = async () => {
@@ -73,9 +84,9 @@ const CampaignSender = () => {
       };
 
       toast.promise(campaignPromise(), {
-        loading: "Sending campaign...",
+        loading: scheduleType === "now" ? "Sending campaign..." : "Scheduling campaign...",
         success: (data) => `${data.message}`,
-        error: "Failed to send campaign",
+        error: scheduleType === "now" ? "Failed to send campaign" : "Failed to schedule campaign",
       });
     }
   };
@@ -87,6 +98,9 @@ const CampaignSender = () => {
   const selectedTemplateName = availableTemplates.find(
     (template) => template._id === selectedTemplate
   )?.templateName;
+
+  // Calculate minimum date (today) for date picker
+  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -201,6 +215,86 @@ const CampaignSender = () => {
               )}
             </motion.div>
 
+            {/* Toggle Switch for Schedule Type */}
+            <motion.div variants={itemVariants} className="relative">
+              <label className="block text-sm font-medium text-white/80 mb-2">
+                Send Options
+              </label>
+              <div className="flex items-center p-1 bg-white/5 border border-white/10 rounded-lg">
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 rounded-md transition-all duration-200 text-sm ${
+                    scheduleType === "now"
+                      ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg"
+                      : "text-white/60 hover:text-white/80"
+                  }`}
+                  onClick={() => setScheduleType("now")}
+                >
+                  <Send size={16} />
+                  Send Now
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-4 flex items-center justify-center gap-2 rounded-md transition-all duration-200 text-sm ${
+                    scheduleType === "future"
+                      ? "bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg"
+                      : "text-white/60 hover:text-white/80"
+                  }`}
+                  onClick={() => setScheduleType("future")}
+                >
+                  <Calendar size={16} />
+                  Schedule Later
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Date and Time Pickers */}
+            <motion.div 
+              initial={false}
+              animate={{ height: scheduleType === "future" ? "auto" : 0, opacity: scheduleType === "future" ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+                <div className="relative">
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Select Date
+                  </label>
+                  <div className="relative group">
+                    <input
+                      type="date"
+                      min={today}
+                      value={scheduledDate}
+                      onChange={(e) => setScheduledDate(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-lg py-3 px-4 pr-12 
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+                        appearance-none transition-all duration-200 hover:bg-white/10"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-blue-400 group-hover:text-blue-300 transition-colors">
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Select Time
+                  </label>
+                  <div className="relative group">
+                    <input
+                      type="time"
+                      value={scheduledTime}
+                      onChange={(e) => setScheduledTime(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-lg py-3 px-4 pr-12 
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+                        appearance-none transition-all duration-200 hover:bg-white/10"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-blue-400 group-hover:text-blue-300 transition-colors">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
             {selectedList && selectedTemplate && (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
@@ -210,7 +304,7 @@ const CampaignSender = () => {
               >
                 <div className="flex items-center gap-2 text-green-400 font-medium mb-2">
                   <CheckCircle size={16} className="text-green-400" />
-                  Ready to send
+                  {scheduleType === "now" ? "Ready to send" : "Ready to schedule"}
                 </div>
                 <div className="text-sm text-white/80">
                   <div className="flex items-center gap-2 mb-2 group">
@@ -227,6 +321,15 @@ const CampaignSender = () => {
                       {selectedTemplateName}
                     </span>
                   </div>
+                  {scheduleType === "future" && scheduledDate && scheduledTime && (
+                    <div className="flex items-center gap-2 mt-2 group">
+                      <Calendar size={14} className="text-white/60 group-hover:text-purple-400 transition-colors" />
+                      <span className="font-medium text-white/70">Scheduled for:</span> 
+                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                        {new Date(`${scheduledDate}T${scheduledTime}`).toLocaleString()}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -236,12 +339,21 @@ const CampaignSender = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300 ${
-                !selectedList || !selectedTemplate || isSending
+                !selectedList || !selectedTemplate || isSending || 
+                (scheduleType === "future" && (!scheduledDate || !scheduledTime))
                   ? "bg-white/5 text-white/40 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-blue-600/20"
+                  : scheduleType === "now"
+                    ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg hover:shadow-blue-600/20"
+                    : "bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-lg hover:shadow-purple-600/20"
               }`}
               onClick={handleSendCampaign}
-              disabled={!selectedList || !selectedTemplate || isLoading || isSending}
+              disabled={
+                !selectedList || 
+                !selectedTemplate || 
+                isLoading || 
+                isSending ||
+                (scheduleType === "future" && (!scheduledDate || !scheduledTime))
+              }
             >
               {isSending ? (
                 <>
@@ -249,12 +361,16 @@ const CampaignSender = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Processing...
+                  {scheduleType === "now" ? "Processing..." : "Scheduling..."}
                 </>
               ) : (
                 <>
-                  <Send className="h-5 w-5" />
-                  Send Campaign
+                  {scheduleType === "now" ? (
+                    <Send className="h-5 w-5" />
+                  ) : (
+                    <Calendar className="h-5 w-5" />
+                  )}
+                  {scheduleType === "now" ? "Send Campaign" : "Schedule Campaign"}
                 </>
               )}
             </motion.button>
