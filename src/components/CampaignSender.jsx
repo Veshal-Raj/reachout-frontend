@@ -88,6 +88,7 @@ const CampaignSender = () => {
         success: (data) => `${data.message}`,
         error: scheduleType === "now" ? "Failed to send campaign" : "Failed to schedule campaign",
       });
+
     }
   };
 

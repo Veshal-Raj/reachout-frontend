@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { checkUserValid } from '../api';
 
 const useAuth = () => {
-   const {setUser, setLoading} = useContext(UserContext);
+   const {setUser, setLoading, setUserVerified} = useContext(UserContext);
    const navigate = useNavigate();
 
    useEffect(()=> {
@@ -23,14 +23,17 @@ const useAuth = () => {
             name: `${data.user?.firstName} ${data.user?.lastName}`,
             };
             setUser(user);
+            setUserVerified(data?.user?.verified)
             // navigate("/home");
         } else {
             setUser({ id: null, email: null, name: null });
+            setUserVerified(false);
             navigate('/login');
         }
         } catch (err) {
             console.error('Error in ValidateUser :: ', err);            
             setUser({ id: null, email: null, name: null });
+            setUserVerified(false);
             navigate('/login');
         } finally {
             setLoading(false);

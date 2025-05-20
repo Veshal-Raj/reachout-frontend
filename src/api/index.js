@@ -41,6 +41,17 @@ export async function checkUserValid() {
     }
 }
 
+// ---------- sender credentials ----------- //
+export async function saveSenderCredentials(payload) {
+    try {
+        const response = await axiosInstance.post("/save-sender-credentials", payload);
+        return response?.data;
+    } catch (error) {
+        console.error('Error in api/index.js saveSenderCredentials -->> ', error);
+        throw error?.response;
+    }
+}
+
 // ---------- list builder ----------------//
 export async function uploadExcel(payload) {
     try {

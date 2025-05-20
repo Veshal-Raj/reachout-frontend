@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ListUploader from '../components/ListUploader';
 import TemplateBuilder from "../components/TemplateBuilder";
@@ -6,9 +6,12 @@ import { Upload, Mail, Send, ChevronRight, LayoutDashboard } from 'lucide-react'
 import CampaignSender from '../components/CampaignSender';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import UserContext from '../utils/UserContext';
+import SenderCredentialsModal from '../components/SenderCredentialsModal';
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const { userVerified } = useContext(UserContext);
   
   const tabs = [
     { id: 0, label: "Email Lists", icon: <Upload />, color: "blue" },
@@ -25,6 +28,10 @@ const Home = () => {
       </div>
 
       <Header />
+
+      <AnimatePresence>
+        {!userVerified && <SenderCredentialsModal />}
+      </AnimatePresence>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-24 relative z-10">
         {/* Breadcrumb */}
