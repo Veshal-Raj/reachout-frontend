@@ -4,26 +4,29 @@ import moment from "moment"
 import { useEffect, useState } from "react";
 import { getLists } from "../api";
 import { toast } from "sonner";
+import useDebounce from "../hooks/useDebounce";
 
 const ListTable = ({ lists, setLists }) => {
     const [searchTerm, setSearchTerm] = useState('');
-  
-  const filteredLists = lists.filter(list => 
-    list?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    const [page, setPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const limit = 10;
 
+    const debouncedSearch = useDebounce(searchTerm, 500);
+  
   useEffect(() => {
     const fetchLists = async () => {
-      const response = await getLists();
+      const response = await getLists(page, limit, debouncedSearch);
       if (response?.success) {
-        setLists(response?.listBuilders || []);
+        setLists(response?.listsData?.items || []);
+        setTotalItems(response?.listsData?.totalItems || 0);
       } else {
         toast.error(response?.message || "Failed to fetch the lists");
       }
     };
 
     fetchLists();
-  }, []);
+  }, [page, debouncedSearch]);
 
   return (
     <div className="lg:col-span-7 xl:col-span-8">
@@ -54,7 +57,7 @@ const ListTable = ({ lists, setLists }) => {
               </div>
             </div>
             
-            {lists.length > 0 ? (
+            {totalItems > 0 ? (
               <div className="overflow-hidden rounded-xl border border-white/10 backdrop-blur-sm">
                 <table className="w-full">
                   <thead className="bg-white/5 border-b border-white/10">
@@ -65,7 +68,7 @@ const ListTable = ({ lists, setLists }) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/10">
-                    {filteredLists.map((list) => (
+                    {lists.map((list) => (
                       <motion.tr 
                         key={list?._id}
                         initial={{ opacity: 0 }}
@@ -98,6 +101,97 @@ const ListTable = ({ lists, setLists }) => {
                 </p>
               </div>
             )}
+
+            {/* pagination logic  */}
+            <div className="flex items-center justify-between mt-6">
+              <div className="flex-1 flex justify-between sm:hidden">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage(prev => prev - 1)}
+                  className="relative inline-flex items-center px-4 py-2 border border-white/10 rounded-lg text-sm font-medium bg-white/5 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setPage(prev => prev + 1)}
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-white/10 rounded-lg text-sm font-medium bg-white/5 text-white"
+                >
+                  Next
+                </button>
+              </div>
+              
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-white/70">
+                    Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to{' '}
+                    <span className="font-medium">{Math.min(page * limit, totalItems)}</span> of{' '}
+                    <span className="font-medium">{totalItems}</span> lists
+                  </p>
+                </div>
+                <div>
+                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <button
+                      disabled={page === 1}
+                      onClick={() => setPage(prev => prev - 1)}
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-white/10 bg-white/5 text-sm font-medium text-white hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <span className="sr-only">Previous</span>
+                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                    
+                    <div className="flex items-center space-x-1 mx-2">
+                      {Array.from({ length: Math.ceil(totalItems / limit) }, (_, i) => {
+                        // Show limited page numbers with ellipsis
+                        if (
+                          i === 0 ||
+                          i === Math.ceil(totalItems / limit) - 1 ||
+                          (i >= page - 2 && i <= page + 1)
+                        ) {
+                          return (
+                            <button
+                              key={i}
+                              onClick={() => setPage(i + 1)}
+                              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                                page === i + 1
+                                  ? 'border-blue-500/50 bg-blue-500/20 text-blue-400'
+                                  : 'border-white/10 bg-white/5 text-white hover:bg-white/10'
+                              }`}
+                            >
+                              {i + 1}
+                            </button>
+                          );
+                        }
+                        
+                        // Show ellipsis
+                        if (i === 1 || i === Math.ceil(totalItems/ limit) - 2) {
+                          return (
+                            <span key={i} className="relative inline-flex items-center px-4 py-2 border border-white/10 bg-white/5 text-sm font-medium text-white/50">
+                              ...
+                            </span>
+                          );
+                        }
+                        
+                        return null;
+                      })}
+                    </div>
+                    
+                    <button
+                      disabled={page === Math.ceil(totalItems / limit)}
+                      onClick={() => setPage(prev => prev + 1)}
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-white/10 bg-white/5 text-sm font-medium text-white hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <span className="sr-only">Next</span>
+                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+
           </motion.div>
         </div>
   )

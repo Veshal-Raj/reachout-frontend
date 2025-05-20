@@ -9,6 +9,7 @@ import { CLOUD_NAME, formats, modules, UPLOAD_PRESET } from '../utils/folder/gen
 import AnimatedBg from './helper/AnimatedBg';
 import EmailTemplates from './EmailTemplates';
 import TemplatePreview from './TemplatePreview';
+import useDebounce from '../hooks/useDebounce';
 
 export default function TemplateBuilder() {
   const [templateName, setTemplateName] = useState('');
@@ -21,6 +22,8 @@ export default function TemplateBuilder() {
   const [searchTerm, setSearchTerm] = useState('');
   const fileInputRef = useRef(null);
   const quillRef = useRef(null);
+
+  const debouncedSearch = useDebounce(searchTerm, 500);
 
   const handleDeleteTemplate = () => {
     setTemplateName('');
@@ -364,8 +367,9 @@ export default function TemplateBuilder() {
 
         {/* Templates List Section */}
         <EmailTemplates 
-        searchTerm={searchTerm} 
-        setSearchTerm={setSearchTerm}
+          debouncedSearch={debouncedSearch}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
           templates={templates}
           setTemplates={setTemplates}
         />
