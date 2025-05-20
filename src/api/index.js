@@ -63,9 +63,10 @@ export async function uploadExcel(payload) {
     }
 }
 
-export async function getLists() {
+export async function getLists(page, limit, searchQuery) {
     try {
-        const response = await axiosInstance.get("/list-builder");
+        // const response = await axiosInstance.get("/list-builder");
+        const response = await axiosInstance.get(`/lists?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
         return response?.data;
     } catch (error) {
         console.error('Error in api/index.js getLists -->> ', error);   
@@ -84,9 +85,9 @@ export async function createEmailTemplate(payload) {
     }
 }
 
-export async function getEmailTemplates() {
+export async function getEmailTemplates(page, limit, searchQuery) {
     try {
-        const response = await axiosInstance.get("/email-template");
+        const response = await axiosInstance.get(`/templates?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
         return response?.data;
     } catch (error) {
         console.error('Error in api/index.js getEmailTemplates -->> ', error);   
