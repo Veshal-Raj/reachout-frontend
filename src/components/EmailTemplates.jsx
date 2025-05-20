@@ -4,9 +4,11 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react";
 import { getEmailTemplates } from "../api";
 import { toast } from "sonner";
+import { TemplateDetailsModal } from "./TemplateDetailsModal";
 
 const EmailTemplates = ({ debouncedSearch, searchTerm, setSearchTerm, templates, setTemplates}) => {
   console.log("debounce search ----  ", debouncedSearch)
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [page, setPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const limit = 10;
@@ -27,6 +29,14 @@ const EmailTemplates = ({ debouncedSearch, searchTerm, setSearchTerm, templates,
 
   return (
    <div className="lg:col-span-4">
+    {
+      selectedTemplate && (
+        <TemplateDetailsModal 
+          selectedTemplate={selectedTemplate}
+          setSelectedTemplate={setSelectedTemplate}
+        />
+      )
+    }
           <motion.div 
             className="backdrop-blur-xl bg-slate-800/50 rounded-2xl border border-white/10 p-6 shadow-xl"
             initial={{ opacity: 0, x: 20 }}
@@ -62,6 +72,7 @@ const EmailTemplates = ({ debouncedSearch, searchTerm, setSearchTerm, templates,
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="group bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors border border-white/10 cursor-pointer"
+                    onClick={()=> setSelectedTemplate(template)}
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex gap-3">

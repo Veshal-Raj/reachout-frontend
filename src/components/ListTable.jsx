@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { getLists } from "../api";
 import { toast } from "sonner";
 import useDebounce from "../hooks/useDebounce";
+import { ListDetailsModal } from "./ListDetailsModal";
 
 const ListTable = ({ lists, setLists }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedList, setSelectedList] = useState(null);
     const [page, setPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const limit = 10;
@@ -28,8 +30,16 @@ const ListTable = ({ lists, setLists }) => {
     fetchLists();
   }, [page, debouncedSearch]);
 
+  
   return (
     <div className="lg:col-span-7 xl:col-span-8">
+          {selectedList && (
+            <ListDetailsModal 
+              selectedList={selectedList}
+              setSelectedList={setSelectedList}
+            />
+          )}
+
           <motion.div 
             className="backdrop-blur-xl bg-slate-800/50 rounded-2xl border border-white/10 p-6 shadow-xl"
             initial={{ opacity: 0, x: 20 }}
@@ -73,7 +83,8 @@ const ListTable = ({ lists, setLists }) => {
                         key={list?._id}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="hover:bg-white/5 transition-colors"
+                        className="hover:bg-white/5 transition-colors cursor-pointer"
+                        onClick={() => setSelectedList(list)}
                       >
                         <td className="px-6 py-4 text-white/90">{list?.name}</td>
                         <td className="px-6 py-4">
