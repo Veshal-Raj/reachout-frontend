@@ -1,17 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ListUploader from '../components/ListUploader';
-import TemplateBuilder from "../components/TemplateBuilder";
 import { Upload, Mail, Send, ChevronRight, LayoutDashboard } from 'lucide-react';
-import CampaignSender from '../components/CampaignSender';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import UserContext from '../utils/UserContext';
-import SenderCredentialsModal from '../components/SenderCredentialsModal';
+const ListUploader = lazy(() => import("../components/ListUploader"));
+const TemplateBuilder = lazy(() => import("../components/TemplateBuilder"));
+const CampaignSender = lazy(() => import("../components/CampaignSender"));
+
+const tabColors = {
+  blue: 'from-blue-600/30 to-blue-500/20 text-blue-300 border-blue-500/50',
+  purple: 'from-purple-600/30 to-purple-500/20 text-purple-300 border-purple-500/50',
+  green: 'from-green-600/30 to-green-500/20 text-green-300 border-green-500/50',
+};
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const { userVerified } = useContext(UserContext);
   
   const tabs = [
     { id: 0, label: "Email Lists", icon: <Upload />, color: "blue" },
@@ -19,9 +22,22 @@ const Home = () => {
     { id: 2, label: "Campaigns", icon: <Send />, color: "green" }
   ];
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 0:
+        return <ListUploader />;
+      case 1:
+        return <TemplateBuilder />;
+      case 2:
+        return <CampaignSender />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-      {/* Animated background elements */}
+      {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob"></div>
         <div className="absolute top-0 -right-40 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000"></div>
@@ -29,13 +45,9 @@ const Home = () => {
 
       <Header />
 
-      <AnimatePresence>
-        {!userVerified && <SenderCredentialsModal />}
-      </AnimatePresence>
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-24 relative z-10">
         {/* Breadcrumb */}
-        <motion.div 
+        <motion.div
           className="flex items-center gap-2 text-sm text-blue-100/80 mb-6"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -48,7 +60,7 @@ const Home = () => {
         </motion.div>
 
         {/* Page Title */}
-        <motion.div 
+        <motion.div
           className="mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -58,37 +70,43 @@ const Home = () => {
             ReachOut Hub
           </h1>
           <p className="mt-2 text-blue-100/60 max-w-2xl">
-            Streamline your recruitment outreach with AI-powered list management and campaign automation
+            Personalized outreach made easy—turn recruiter lists into smart email campaigns that get interviews
           </p>
         </motion.div>
 
         {/* Tabs */}
         <div className="mb-8">
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {tabs.map((tab) => (
-              <motion.button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                whileHover={{ y: -2 }}
-                className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all backdrop-blur-sm border cursor-pointer ${
-                  activeTab === tab.id
-                    ? `bg-gradient-to-r from-${tab.color}-600/30 to-${tab.color}-500/20 text-${tab.color}-300 border-${tab.color}-500/50 shadow-lg`
-                    : "bg-white/5 border-white/10 hover:bg-white/10 text-white/80"
-                }`}
-              >
-                <div className={`p-2 rounded-lg backdrop-blur-sm ${
-                  activeTab === tab.id 
-                    ? `bg-${tab.color}-500/20` 
-                    : "bg-white/5"
-                }`}>
-                  {React.cloneElement(tab.icon, { 
-                    size: 18, 
-                    className: activeTab === tab.id ? `text-${tab.color}-300` : "text-white/60" 
-                  })}
-                </div>
-                <span>{tab.label}</span>
-              </motion.button>
-            ))}
+          <div className="flex flex-wrap gap-2 md:gap-3" role="tablist">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              const colorClass = tabColors[tab.color];
+
+              return (
+                <motion.button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  whileHover={{ y: -2 }}
+                  role="tab"
+                  aria-selected={isActive}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all backdrop-blur-sm border cursor-pointer ${
+                    isActive
+                      ? `bg-gradient-to-r ${colorClass} shadow-lg`
+                      : "bg-white/5 border-white/10 hover:bg-white/10 text-white/80"
+                  }`}
+                >
+                  <div className={`p-2 rounded-lg backdrop-blur-sm ${
+                    isActive ? `bg-${tab.color}-500/20` : "bg-white/5"
+                  }`}>
+                    {React.cloneElement(tab.icon, {
+                      size: 18,
+                      className: isActive ? `text-${tab.color}-300` : "text-white/60",
+                      title: tab.label
+                    })}
+                  </div>
+                  <span>{tab.label}</span>
+                </motion.button>
+              );
+            })}
           </div>
         </div>
 
@@ -109,21 +127,16 @@ const Home = () => {
                 "border-green-500"
               }`}>
                 <div className="p-6 backdrop-blur-lg bg-slate-800/30 rounded-r-xl">
-                  {activeTab === 0 ? (
-                    <ListUploader />
-                  ) : activeTab === 1 ? (
-                    <TemplateBuilder />
-                  ) : (
-                    <CampaignSender />
-                  )}
+                  <Suspense fallback={<div className="text-center py-12">Loading...</div>}>
+                    {renderContent()}
+                  </Suspense>
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
-      
-      {/* Footer */}
+
       <Footer />
     </div>
   );

@@ -1,11 +1,12 @@
-import { useContext, useEffect } from 'react'
-import UserContext from '../utils/UserContext'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { checkUserValid } from '../api';
+import { setUser, setLoading, setUserVerified } from '../redux/slices/userSlice';
+import { useDispatch } from 'react-redux';
 
 const useAuth = () => {
-   const {setUser, setLoading, setUserVerified} = useContext(UserContext);
-   const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
    useEffect(()=> {
        validateUser();
@@ -15,30 +16,29 @@ const useAuth = () => {
         try {
             const response = await checkUserValid();
             const data = response?.data;
-
-        if (data?.success) {
-            const user = {
-            id: data.user?._id,
-            email: data.user?.email,
-            name: `${data.user?.firstName} ${data.user?.lastName}`,
-            };
-            setUser(user);
-            setUserVerified(data?.user?.verified)
-            // navigate("/home");
-        } else {
-            setUser({ id: null, email: null, name: null });
-            setUserVerified(false);
-            navigate('/login');
-        }
+            dispatch(setLoading(true));
+            if (data?.success) {
+                const user = {
+                    id: data.user?._id,
+                    email: data.user?.email,
+                    name: `${data.user?.firstName} ${data.user?.lastName}`,
+                };
+                dispatch(setUser(user));
+                dispatch(setUserVerified(data?.user?.verified));
+            } else {
+                dispatch(setUser({ id: null, email: null, name: null }));
+                dispatch(setUserVerified(false));
+                navigate('/');
+            }
         } catch (err) {
-            console.error('Error in ValidateUser :: ', err);            
-            setUser({ id: null, email: null, name: null });
-            setUserVerified(false);
-            navigate('/login');
+            console.error('Error in ValidateUser :: ', err);
+            dispatch(setUser({ id: null, email: null, name: null }));
+            dispatch(setUserVerified(false));
+            navigate('/');
         } finally {
-            setLoading(false);
+            dispatch(setLoading(false));
         }
-  };
+    };
 }
 
 export default useAuth

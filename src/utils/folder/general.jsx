@@ -67,31 +67,39 @@ export const jobSeekerTestimonials = [
 
 // LandingPage Features with enhanced descriptions
  export const features = [
-  {
-    icon: <Users className="h-8 w-8" />,
-    title: 'Excel List Management',
-    desc: 'Import & organize recruiter data directly from Excel sheets with smart deduplication and tagging',
-    color: 'from-blue-600 to-cyan-400'
-  },
-  {
-    icon: <FileText className="h-8 w-8" />,
-    title: 'Dynamic Templates',
-    desc: 'Create personalized email templates with PDF attachments and dynamic merge tags',
-    color: 'from-violet-600 to-purple-400'
-  },
-  {
-    icon: <Send className="h-8 w-8" />,
-    title: 'Smart Campaign Builder',
-    desc: 'Combine any recruiter list with templates and schedule multi-step sequences',
-    color: 'from-emerald-600 to-green-400'
-  },
-  {
-    icon: <Calendar className="h-8 w-8" />,
-    title: 'Precision Scheduling',
-    desc: 'Automate delivery with timezone-aware scheduling and send-time optimization',
-    color: 'from-amber-600 to-yellow-400'
-  },
-];
+        {
+            icon: <svg data-testid="excel-icon" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>,
+            color: "from-blue-500 to-blue-700",
+            title: "Excel List Import",
+            desc: "Easily upload your recruiter contact lists from Excel or CSV and convert them into targeted email campaigns."
+        },
+        {
+            icon: <svg data-testid="email-icon" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>,
+            color: "from-purple-500 to-purple-700",
+            title: "Email Templates",
+            desc: "Create personalized email templates that stand out to recruiters and improve your chances of getting interviews."
+        },
+        {
+            icon: <svg data-testid="schedule-icon" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>,
+            color: "from-green-500 to-green-700",
+            title: "Smart Scheduling",
+            desc: "Schedule your emails to send at optimal times when recruiters are most likely to read and respond to your messages."
+        },
+        {
+            icon: <svg data-testid="analytics-icon" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>,
+            color: "from-amber-500 to-amber-700",
+            title: "Campaign Analytics",
+            desc: "Track open rates, responses, and interview requests to optimize your job application outreach strategy."
+        }
+    ];
 
 export const validateEmail = (email) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

@@ -33,6 +33,7 @@ const Testimonials = () => {
               key={idx}
               variants={fadeInUp}
               className="rounded-2xl backdrop-blur-lg bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-all duration-300"
+              data-testid="testimonial-item"
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-lg font-bold">
@@ -44,7 +45,7 @@ const Testimonials = () => {
                 </div>
                 <div className="ml-auto flex">
                   {[1, 2, 3, 4, 5].map(star => (
-                    <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" data-testid="star-icon" />
                   ))}
                 </div>
               </div>

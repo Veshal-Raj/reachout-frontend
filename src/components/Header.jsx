@@ -1,25 +1,32 @@
 import { AVATAR_URL, EMAIL, USERNAME } from '../utils/folder/general'
 import { Send } from 'lucide-react'
-import { useContext } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import UserContext from '../utils/UserContext'
 import { logoutUser } from '../api'
 import { toast, Toaster } from 'sonner'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import SignUpModal from './SignUpModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading, setUser } from '../redux/slices/userSlice'
 
 const Header = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
       await logoutUser(); 
-      setUser({ id: null, email: null, name: null });
+      dispatch(setLoading(true));
+      dispatch(setUser({ id: null, email: null, name: null }));
       toast.success("Logged out successfully");
-      navigate("/login"); 
+      navigate("/"); 
     } catch (error) {
       console.error("Logout failed:", error);
       toast.error("Logout failed. Try again.");
+    } finally {
+      dispatch(setLoading(false))
     }
   };
 
@@ -31,7 +38,7 @@ const Header = () => {
             {/* Logo */}
             <motion.a
               onClick={() => navigate("/")}
-              className="flex items-center  cursor-pointer"
+              className="flex items-center cursor-pointer"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
@@ -47,22 +54,14 @@ const Header = () => {
             {/* Navigation */}
             <div className="flex items-center gap-4">
               {!user?.id ? (
-                <div className="flex items-center gap-3">
-                  <motion.button
-                    onClick={() => navigate("/login")}
-                    className="px-6 py-2 rounded-full text-white bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm font-medium hover:shadow-purple-500/10"
-                    whileHover={{ y: -1 }}
-                  >
-                    Sign In
-                  </motion.button>
-                  <motion.button
-                    onClick={() => navigate("/signup")}
-                    className="px-6 py-2 rounded-full text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-sm font-medium shadow-lg hover:shadow-blue-500/25"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    Get Started Free
-                  </motion.button>
-                </div>
+                <motion.button
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-6 py-2 rounded-full text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-sm font-medium shadow-lg hover:shadow-purple-500/25 backdrop-blur-sm border border-white/10 cursor-pointer"
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Get Started
+                </motion.button>
               ) : (
                 <div className="dropdown dropdown-end">
                   <motion.div
@@ -111,6 +110,14 @@ const Header = () => {
           </div>
         </div>
       </motion.header>
+
+      {/* Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <SignUpModal setIsModalOpen={setIsModalOpen} />
+        )}
+      </AnimatePresence>
+
       <Toaster position="top-right" richColors />
     </>
   )

@@ -139,7 +139,7 @@ export default function TemplateBuilder() {
         // Refresh templates list
         const templatesResponse = await getEmailTemplates();
         if (templatesResponse?.success) {
-          setTemplates(templatesResponse?.emailTemplates || []);
+          setTemplates(templatesResponse?.templatesData?.items || []);
         }
         
         setIsSending(false);
@@ -171,9 +171,14 @@ export default function TemplateBuilder() {
             animate={{ opacity: 1, x: 0 }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-purple-600/30 to-blue-600/30 flex items-center justify-center backdrop-blur-sm">
-                <Mail className="h-5 w-5 text-purple-400" />
-              </div>
+              <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, type: "spring" }}
+              className="h-10 w-10 rounded-lg bg-gradient-to-r from-purple-600/30 to-blue-600/30 flex items-center justify-center backdrop-blur-sm"
+            >
+              <Mail className="h-5 w-5 text-purple-400" />
+            </motion.div>
               <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
                 Create Email Template
               </h2>
