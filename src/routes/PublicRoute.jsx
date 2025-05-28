@@ -1,10 +1,9 @@
-import { useContext } from 'react'
-import UserContext from '../utils/UserContext'
 import { Navigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import { useSelector } from 'react-redux';
 
 const PublicRoute = ({ children }) => {
-    const { user, loading } = useContext(UserContext);
+    const { user, loading } = useSelector((state) => state.user);
     
     useAuth();
     

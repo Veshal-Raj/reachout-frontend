@@ -25,9 +25,9 @@ const CampaignSender = () => {
   const fetchList = async () => {
     try {
       setIsLoading(true);
-      const response = await getLists();
+      const response = await getLists(1, 1000,"");
       if (response?.success) {
-        setAvailableLists(response?.listBuilders || []);
+        setAvailableLists(response?.listsData?.items || []);
       } else {
         toast.error(response?.message || "Failed to fetch List");
       }
@@ -42,9 +42,9 @@ const CampaignSender = () => {
   const fetchEmailTemplates = async () => {
     try {
       setIsLoading(true);
-      const response = await getEmailTemplates();
+      const response = await getEmailTemplates(1, 1000,"");
       if (response?.success) {
-        setAvailableTemplates(response?.emailTemplates || []);
+        setAvailableTemplates(response?.templatesData?.items || []);
       } else {
         toast.error(response?.message || "Failed to fetch email templates");
       }
@@ -117,7 +117,15 @@ const CampaignSender = () => {
         
         {/* Main content with glass effect */}
         <div className="relative backdrop-blur-sm bg-white/5 border border-white/10 p-6 md:p-8 z-10">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3 mb-8">
+             <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, type: "spring" }}
+              className="bg-white/10 text-blue-400 p-3 rounded-lg shadow-lg backdrop-blur-sm"
+            >
+              <Send className="h-5 w-5" />
+            </motion.div>
             <motion.h2 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -126,14 +134,7 @@ const CampaignSender = () => {
             >
               Create New Campaign
             </motion.h2>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, type: "spring" }}
-              className="bg-white/10 text-blue-400 p-3 rounded-lg shadow-lg backdrop-blur-sm"
-            >
-              <Mail className="h-6 w-6" />
-            </motion.div>
+           
           </div>
 
           <motion.div 

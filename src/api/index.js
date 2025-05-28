@@ -1,23 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
 // ---------- authentication -------------- //
-export async function registerUser(formData) {
+export async function getGoogleAuthUrl() {
     try {
-        const response = await axiosInstance.post("/auth/register", formData);
-        return response?.data;
+        const response = await axiosInstance.get("/auth/google");
+        return response?.data?.url;
     } catch (error) {
-        console.error('Error in api/index.js registerUser -->> ', error);
-        throw error?.response;
-    }
-}
-
-export async function loginUser(formData) {
-    try {
-        const response = await axiosInstance.post("/auth/login", formData);
-        return response?.data;
-    } catch (error) {
-        console.error('Error in api/index.js loginUser -->> ', error);
-        throw error?.response;
+        console.error("Error in api/index.js getGoogleAuthUrl -->>", error);
+        throw error?.response?.data?.error || "Failed to get Google auth URL";
     }
 }
 
@@ -63,7 +53,7 @@ export async function uploadExcel(payload) {
     }
 }
 
-export async function getLists(page, limit, searchQuery) {
+export async function getLists(page=1, limit=10, searchQuery="") {
     try {
         // const response = await axiosInstance.get("/list-builder");
         const response = await axiosInstance.get(`/lists?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
@@ -85,7 +75,7 @@ export async function createEmailTemplate(payload) {
     }
 }
 
-export async function getEmailTemplates(page, limit, searchQuery) {
+export async function getEmailTemplates(page=1, limit=10, searchQuery="") {
     try {
         const response = await axiosInstance.get(`/templates?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
         return response?.data;

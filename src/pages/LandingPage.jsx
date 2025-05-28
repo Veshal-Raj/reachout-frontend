@@ -1,22 +1,16 @@
-import { useEffect } from 'react';
-import { useAnimation} from 'framer-motion';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import HeroSection from '../components/helper/HeroSection';
-import StatsSection from '../components/helper/StatsSection';
-import FloatingPreview from '../components/helper/FloatingPreview';
-import Features from '../components/helper/Features';
-import Testimonials from '../components/helper/Testimonial';
-import CTAsection from '../components/helper/CTAsection';
+import React, { Suspense, lazy } from 'react';
+
+const Header = lazy(() => import("../components/Header"));
+const HeroSection = lazy(() => import("../components/helper/HeroSection"));
+const FloatingPreview = lazy(() => import("../components/helper/FloatingPreview"));
+const Features = lazy(() => import("../components/helper/Features"));
+const StatsSection = lazy(() => import("../components/helper/StatsSection"));
+const Testimonials = lazy(() => import("../components/helper/Testimonial"));
+const CTAsection = lazy(() => import("../components/helper/CTAsection"));
+const Footer = lazy(() => import("../components/Footer"));
 
 
 const LandingPage = () => {
-  const controls = useAnimation();
-
-  useEffect(() => {
-    controls.start({ opacity: 1, y: 0 });
-  }, [controls]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
       {/* Animated background gradient */}
@@ -27,29 +21,16 @@ const LandingPage = () => {
         <div className="absolute -bottom-40 left-20 w-96 h-96 bg-emerald-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
-      {/* Header */}
-      <Header />
-
-      {/* Hero Section */}
-      <HeroSection />
-
-      {/* Floating UI Preview */}
-      <FloatingPreview />
-
-      {/* Features Section */}
-      <Features />
-
-      {/* Stats Section */}
-      <StatsSection />
-
-      {/* Testimonials */}
-      <Testimonials />
-
-      {/* CTA Section */}
-      <CTAsection /> 
-
-      {/* Footer */}
-      <Footer />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Header />
+        <HeroSection />
+        <FloatingPreview />
+        <Features />
+        <StatsSection />
+        <Testimonials />
+        <CTAsection /> 
+        <Footer />
+      </Suspense>
     </div>
   );
 };

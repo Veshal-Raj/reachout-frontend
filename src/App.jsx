@@ -1,40 +1,31 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/SignUp";
 import LandingPage from "./pages/LandingPage";
-import { UserProvider } from "./utils/UserContext";
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ErrorPage from "./pages/ErrorPage";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 const App = () => {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={
-            <PublicRoute>
-              <LandingPage />
-            </PublicRoute>
-            } />
-          <Route path="/home" element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-            } />
-          <Route path="/signup" element={
-            <PublicRoute>
-              <Signup />
-            </PublicRoute>
-            } />
-          <Route path="/login" element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-            } />
-        </Routes>
-      </Router>
-    </UserProvider>
+    <Provider store={store}>
+        <Router>
+          <Routes>
+            <Route path="/" element={
+              <PublicRoute>
+                <LandingPage />
+              </PublicRoute>
+              } />
+            <Route path="/home" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+              } />
+            <Route path="/*" element={<ErrorPage />} />
+          </Routes>
+        </Router>
+    </Provider>
   );
 };
 
