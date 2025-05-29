@@ -95,3 +95,14 @@ export async function sendCampaign(payload) {
         throw error?.response; 
     }
 }
+
+// ---------------- newsletter ------------ //
+export async function addSubscriber(payload) {
+    try {
+        const response = await axiosInstance.post("/subscriber", payload);
+        return response?.data;
+    } catch (error) {
+        console.error('Error in api/index.js addSubscriber -->> ', error);   
+        throw error?.response; 
+    }
+}
