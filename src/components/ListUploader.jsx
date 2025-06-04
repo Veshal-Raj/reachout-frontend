@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import { toast } from 'sonner';
-import { Upload, X, FileText, Eye, Trash2, CheckCircle } from 'lucide-react';
+import { Upload, X, FileText, Eye, Trash2, CheckCircle, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getLists, uploadExcel } from '../api';
 import PreviewModal from './PreviewModal';
@@ -135,6 +135,25 @@ export default function ListUploader() {
     });
   };
 
+  const handleDownloadSample = () => {
+    // Sample data with headers
+    const sampleData = [
+      { Name: "John Doe", Email: "john@example.com" },
+      { Name: "Jane Smith", Email: "jane@example.com" },
+      { Name: "Bob Johnson", Email: "bob@example.com" }
+    ];
+
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(sampleData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Contacts");
+
+    // Generate file and trigger download
+    XLSX.writeFile(workbook, "contact_list_sample.xlsx");
+    toast.info("Sample file downloaded");
+  };
+
+
   const togglePreviewModal = () => {
     setIsPreviewModalOpen(!isPreviewModalOpen);
   };
@@ -180,9 +199,18 @@ export default function ListUploader() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2 text-white/80">
+                <div className='flex justify-between gap-2 my-2'>
+                  <label className="block text-sm font-medium mb-2 text-white/80">
                   Upload Excel File
                 </label>
+                  <button
+                    onClick={handleDownloadSample}
+                    className="text-xs flex items-center text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
+                  >
+                    <Download className="h-4 w-4 mr-1" /> 
+                    Download Sample Excel file
+                  </button>
+                </div>
                 <div className={`border-2 border-dashed rounded-lg transition-all duration-300 ${
                   fileName ? 'border-blue-500/30' : 'border-white/10 hover:border-blue-500/30'
                 }`}>
