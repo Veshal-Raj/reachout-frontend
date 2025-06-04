@@ -1,8 +1,8 @@
 import { motion } from "framer-motion"
-import { Search, Users } from "lucide-react"
+import { Search, Trash2, Users } from "lucide-react"
 import moment from "moment"
 import { useEffect, useState } from "react";
-import { getLists } from "../api";
+import { deleteList, getLists } from "../api";
 import { toast } from "sonner";
 import useDebounce from "../hooks/useDebounce";
 import { ListDetailsModal } from "./ListDetailsModal";
@@ -12,6 +12,7 @@ const ListTable = ({ lists, setLists }) => {
     const [selectedList, setSelectedList] = useState(null);
     const [page, setPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
+    const [deletingId, setDeletingId] = useState(null);
     const limit = 10;
 
     const debouncedSearch = useDebounce(searchTerm, 500);
@@ -30,6 +31,40 @@ const ListTable = ({ lists, setLists }) => {
     fetchLists();
   }, [page, debouncedSearch]);
 
+  const handleDeleteList = async (e, listId) => {
+    e.stopPropagation(); // Prevent row click when clicking delete
+
+    if (!window.confirm('Are you sure you want to delete this list? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeletingId(listId);
+    try {
+      const response = await deleteList(listId);
+      if (response?.success) {
+        toast.success('List deleted successfully');
+        
+        // Remove the deleted item from the current list
+        setLists(prevLists => prevLists.filter(list => list._id !== listId));
+        
+        // Update total items count
+        setTotalItems(prev => prev - 1);
+        
+        // If current page becomes empty and it's not the first page, go to previous page
+        const remainingItems = lists.length - 1;
+        if (remainingItems === 0 && page > 1) {
+          setPage(prev => prev - 1);
+        }
+      } else {
+        toast.error(response?.message || 'Failed to delete the list');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  }
   
   return (
     <div className="lg:col-span-7 xl:col-span-8">
@@ -75,6 +110,7 @@ const ListTable = ({ lists, setLists }) => {
                       <th className="px-6 py-3.5 text-left text-sm font-medium text-white/80">List Name</th>
                       <th className="px-6 py-3.5 text-left text-sm font-medium text-white/80">Contacts</th>
                       <th className="px-6 py-3.5 text-left text-sm font-medium text-white/80">Created At</th>
+                      <th className="px-6 py-3.5 text-left text-sm font-medium text-white/80">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/10">
@@ -95,6 +131,20 @@ const ListTable = ({ lists, setLists }) => {
                         </td>
                         <td className="px-6 py-4 text-white/60">
                           {moment(list?.createdAt).format('MMM D, YYYY')}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={(e) => handleDeleteList(e, list._id)}
+                            disabled={deletingId === list._id}
+                            className="p-2 rounded-lg hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed group"
+                            title="Delete list"
+                          >
+                            {deletingId === list._id ? (
+                              <div className="h-4 w-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4 text-red-400 group-hover:text-red-300" />
+                            )}
+                          </button>
                         </td>
                       </motion.tr>
                     ))}

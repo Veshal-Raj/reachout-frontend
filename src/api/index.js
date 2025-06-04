@@ -64,6 +64,16 @@ export async function getLists(page=1, limit=10, searchQuery="") {
     }
 }
 
+export async function deleteList(listId) {
+    try {
+        const response = await axiosInstance.delete(`/list-builder/${listId}`);
+        return response?.data;
+    } catch (error) {
+        console.error('Error in api/index.js deleteList -->> ', error);   
+        throw error?.response; 
+    }
+}
+ 
 // ----------- template builder ------------//
 export async function createEmailTemplate(payload) {
     try {
