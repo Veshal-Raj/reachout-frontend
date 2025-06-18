@@ -6,8 +6,24 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import axios from "axios";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    const interval = setInterval(()=> {
+      axios.get("https://reachout-backend.onrender.com/ping")
+        .then(() => {
+          console.log("Pinged backend to keep it awake.");
+        })
+        .catch(err => {
+          console.error("Error pinging backend:", err);
+        });
+    }, 420000)
+  
+    return () => clearInterval(interval)
+  }, [])
+  
   return (
     <Provider store={store}>
         <Router>
