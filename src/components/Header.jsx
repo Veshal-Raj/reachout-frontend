@@ -71,7 +71,7 @@ const Header = () => {
                     whileHover={{ scale: 1.05 }}
                   >
                     <div className="w-9 rounded-full">
-                      <img alt="User avatar" src={AVATAR_URL} className="border border-white/10" />
+                      <img alt="User avatar" src={user?.profilePicture || AVATAR_URL} className="border border-white/10" />
                     </div>
                   </motion.div>
                   
@@ -80,17 +80,17 @@ const Header = () => {
                     className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-slate-800/95 backdrop-blur-sm rounded-xl w-52 border border-white/10"
                   >
                     <li>
-                      <div className="px-4 py-3 border-b border-white/10">
-                        <p className="text-sm font-medium text-white">{USERNAME}</p>
-                        <p className="text-xs text-white/60 mt-1 truncate">{EMAIL}</p>
+                      <div className="flex flex-col px-4 py-3 border-b border-white/10">
+                        <p className="text-sm font-medium text-white">{ user?.name || USERNAME}</p>
+                        <p className="text-xs text-white/60 mt-1 truncate">{user?.email || EMAIL}</p>
                       </div>
                     </li>
-                    <li>
+                    <li className='hidden'>
                       <a className="text-white/90 hover:bg-white/5 rounded-lg px-3 py-2 text-sm">
                         Dashboard
                       </a>
                     </li>
-                    <li>
+                    <li className='hidden'>
                       <a className="text-white/90 hover:bg-white/5 rounded-lg px-3 py-2 text-sm">
                         Settings
                       </a>

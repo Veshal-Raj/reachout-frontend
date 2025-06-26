@@ -22,6 +22,7 @@ const useAuth = () => {
                     id: data.user?._id,
                     email: data.user?.email,
                     name: `${data.user?.firstName} ${data.user?.lastName}`,
+                    profilePicture: data.user?.profilePicture,
                 };
                 dispatch(setUser(user));
                 dispatch(setUserVerified(data?.user?.verified));
