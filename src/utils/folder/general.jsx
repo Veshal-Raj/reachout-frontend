@@ -1,5 +1,3 @@
-import { Send, FileText, Calendar, Users, ArrowRight, Check, Star, ChevronRight } from 'lucide-react';
-
 export const AVATAR_URL="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
 
 export const USERNAME="Veshal Raj"
